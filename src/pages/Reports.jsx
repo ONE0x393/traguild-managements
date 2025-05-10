@@ -7,7 +7,16 @@ import withLayout from '../hoc/withLayout';
 function formatToKST(isoString) {
   if (!isoString) return '';
   const date = new Date(isoString);
-  return date.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', hour12: false });
+
+  const year = String(date.getFullYear()).slice(2); // 두 자리 연도
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // 2자리 월
+  const day = String(date.getDate()).padStart(2, '0'); // 2자리 일
+
+  // 시간과 분을 KST로 가져오기 위해 toLocaleString 사용
+  const options = { timeZone: 'Asia/Seoul', hour12: false, hour: '2-digit', minute: '2-digit' };
+  const [hour, minute] = date.toLocaleTimeString('ko-KR', options).split(':');
+
+  return `${year}-${month}-${day} ${hour}:${minute}`;
 }
 
 function Reports() {
