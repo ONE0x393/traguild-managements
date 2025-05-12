@@ -19,8 +19,11 @@ export default function Sidebar() {
           <li className="mb-2">
             <NavLink to="/users" className={linkClass}>사용자 관리</NavLink>
           </li>
-          <li>
+          <li className="mb-2">
             <NavLink to="/requests" className={linkClass}>게시물 관리</NavLink>
+          </li>
+          <li className="mb-2">
+            <NavLink to="/reports" className={linkClass}>신고 관리</NavLink>
           </li>
         </ul>
       </nav>

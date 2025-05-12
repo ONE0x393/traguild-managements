@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
 import Requests from './pages/Requests';
+import Reports from './pages/Reports';
 import RequestDetail from './pages/RequestDetail';
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/users" element={<Users />} />
         <Route path="/Requests" element={<Requests />} />
+        <Route path="/Reports" element={<Reports />} />
         <Route
           path="/requests/:request_idx"
           element={<RequestDetail />}
