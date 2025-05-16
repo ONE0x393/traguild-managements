@@ -12,19 +12,39 @@ function RequestDetail() {
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
+    // 요청 상세 정보
     api.post("/requestInfo", { request_idx }).then(res => {
       const rd = Array.isArray(res.data) ? res.data[0] : res.data;
       setData(rd);
+
+      // 요청자 정보
       api.post("/userInfo", { user_idx: rd.user_idx }).then(res2 => {
         const ui = Array.isArray(res2.data) ? res2.data[0] : res2.data;
         setPostUserInfo(ui);
       });
     });
-    api.post("/requestComment/all", { request_idx }).then(res => setComments(res.data));
+
+    // 댓글 정보
+    api.post("/requestComment/", { request_idx }).then(async res => {
+      const commentsData = res.data;
+      // 각 댓글의 user_idx로 닉네임 정보 요청
+      const commentsWithNickname = await Promise.all(
+        commentsData.map(async c => {
+          try {
+            const resUser = await api.post("/userInfo", { user_idx: c.user_idx });
+            const userInfo = Array.isArray(resUser.data) ? resUser.data[0] : resUser.data;
+            return { ...c, user_nickname: userInfo.user_nickname };
+          } catch (err) {
+            return { ...c, user_nickname: "-" };
+          }
+        })
+      );
+      setComments(commentsWithNickname);
+    });
   }, [request_idx]);
 
   const handleDelete = () => {
-    if (!confirm("정말 이 게시글을 삭제하시겠습니까?")) return;
+    if (!window.confirm("정말 이 게시글을 삭제하시겠습니까?")) return;
     api
       .post("/requestInfo/update", { request_idx, is_deleted: true })
       .then(() => setData(prev => ({ ...prev, is_deleted: true })));
@@ -92,6 +112,7 @@ function RequestDetail() {
         </div>
       </div>
 
+      {/* 댓글 영역 */}
       <div className="max-w-4xl w-full mx-auto p-6 space-y-6">
         <h3 className="text-lg font-semibold">댓글</h3>
         {comments.length === 0 ? (
@@ -102,18 +123,18 @@ function RequestDetail() {
               <li key={c.comment_idx} className="p-4 bg-white rounded shadow">
                 <div className="flex items-center mb-2 space-x-2">
                   <img
-                    src={
-                      c.user_img
-                        ? `https://traguild.kro.kr/api/userInfo/userImg/${c.user_idx}`
-                        : "/LOGO.png"
-                    }
+                    src={`https://traguild.kro.kr/api/userInfo/userImg/${c.user_idx}`}
                     alt="avatar"
                     className="w-8 h-8 rounded-full object-cover"
+                    onError={e => {
+                      e.target.onerror = null;
+                      e.target.src = "/LOGO.png";
+                    }}
                   />
-                  <span className="font-medium truncate">{c.user_nickname}</span>
+                  <span className="font-medium truncate">{c.user_nickname || "-"}</span>
                 </div>
                 <p className="text-gray-800 whitespace-pre-wrap break-words">
-                  {c.comment_content}
+                  {c.comment}
                 </p>
               </li>
             ))}
