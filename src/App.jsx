@@ -10,7 +10,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Navigate to="/users" replace />} />
         <Route path="/users" element={<Users />} />
         <Route path="/Requests" element={<Requests />} />
         <Route path="/Reports" element={<Reports />} />
