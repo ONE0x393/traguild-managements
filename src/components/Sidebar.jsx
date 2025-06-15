@@ -13,9 +13,9 @@ export default function Sidebar() {
     <aside className="w-64 bg-default-bg border-r border-default-border text-default-btn shadow-sm">
       <nav className="mt-6">
         <ul>
-          <li className="mb-2">
+          {/* <li className="mb-2">
             <NavLink to="/" className={linkClass}>대시보드</NavLink>
-          </li>
+          </li> */}
           <li className="mb-2">
             <NavLink to="/users" className={linkClass}>사용자 관리</NavLink>
           </li>
